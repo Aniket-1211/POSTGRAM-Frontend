@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 function SignUpPage() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -43,8 +44,11 @@ function SignUpPage() {
         throw new Error(data.message || 'Unable to create user')
       }
 
-      toast.success('User created successfully')
+      localStorage.setItem('authToken', data.token)
+      localStorage.setItem('authUser', JSON.stringify(data.user))
+      toast.success('Account created and signed in successfully')
       setFormData({ username: '', email: '', password: '' })
+      navigate('/feed')
     } catch (error) {
       toast.error(error.message)
     } finally {
